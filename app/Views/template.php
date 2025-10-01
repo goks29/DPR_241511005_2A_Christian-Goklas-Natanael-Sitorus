@@ -28,20 +28,20 @@
                 <ul class="navbar-nav ms-auto">
                     <?php if ($session->get('role') == 'Admin'): ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/admin/dashboard') ?>">Manajemen Anggota DPR</a>
+                            <a class="nav-link" href="<?= base_url('/admin/manage_anggota') ?>">Manajemen Anggota DPR</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('admin/manage_mahasiswa')?>">Manajemen Komponen Gaji Tunjangan</a>
+                            <a class="nav-link" href="<?= base_url('admin/manage_komponen')?>">Manajemen Komponen Gaji Tunjangan</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('admin/manage_courses')?>">Manajemen Data Penggajian</a>
+                            <a class="nav-link" href="<?= base_url('admin/manage_penggajian')?>">Manajemen Data Penggajian</a>
                         </li>
                     <?php else: ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('/public/dashboard') ?>">Data Anggota</a>
+                            <a class="nav-link" href="<?= base_url('/public/anggota') ?>">Data Anggota</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="<?= base_url('public/courses')?>">Data Penggajian</a>
+                            <a class="nav-link" href="<?= base_url('public/data_penggajian')?>">Data Penggajian</a>
                         </li>
                     <?php endif ?>
                     <li class="nav-item">
@@ -61,6 +61,9 @@
         <?php if(session()->getFlashdata('error')): ?>
             <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
         <?php endif; ?>
+
+        <!-- Konten halaman -->
+        <?= $content ?? '' ?>
     </main>
 
     <!-- Footer -->
