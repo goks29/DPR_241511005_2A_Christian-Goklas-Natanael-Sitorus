@@ -109,6 +109,7 @@
                         <td>${c.status_pernikahan}</td>
                         <td>
                             <button class="btn btn-danger btn-sm del" data-id="${c.id_anggota}">Hapus</button>
+                            <button class="btn btn-info btn-sm edit" data-id=${c.id_anggota}>edit</button>
                         </td>
                     `;
                     tableAnggota.appendChild(tr);
@@ -158,7 +159,49 @@
                     bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
                 });
 
-                
+                //edit
+
+                if (e.target.classList.contains('edit')) {
+                const id = e.target.dataset.id;
+                const modalEl = document.getElementById('editModal');
+                const editModal = new bootstrap.Modal(modalEl);
+
+                fetch(`<?= base_url('admin/manage_anggota/edit/') ?>${id}`)
+                    .then(res => res.text())
+                    .then(html => {
+                        const modalBody = modalEl.querySelector('.modal-body');
+                        modalBody.innerHTML = html;
+
+                        editModal.show();
+
+                        const form = modalBody.querySelector('form');
+                        form.addEventListener('submit', function(ev) {
+                            ev.preventDefault();
+
+                            const formData = new FormData(form);
+                            fetch(form.action, { method: 'POST', body: formData })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        const index = anggotaData.findIndex(c => c.id == id);
+                                        if (index >= 0) {
+                                            anggotaData[index].nama_depan  = formData.get('nama_depan');
+                                            anggotaData[index].nama_belakang = formData.get('nama_belakang');
+                                            render(anggotaData);
+                                        }
+                                        showAlert(`<strong>Sukses!</strong> Anggota berhasil diperbarui.`);
+                                        editModal.hide();
+                                    } else {
+                                        showAlert(`<strong>Gagal!</strong> ${result.message || 'Terjadi kesalahan.'}`, 'danger');
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    showAlert('<strong>Error!</strong> Tidak dapat terhubung ke server.', 'danger');
+                                });
+                        });
+                    });
+                }
             });
 
         });
