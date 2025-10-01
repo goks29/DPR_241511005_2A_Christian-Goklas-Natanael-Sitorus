@@ -9,9 +9,17 @@ $routes->get('/', 'Home::index');
 
 
 //routes admin
-$routes->get('/admin/manage_anggota', 'adminController::anggota', ['filter' => 'admin']);
+$routes->get('/admin/manage_anggota', 'adminController::manageAnggota', ['filter' => 'admin']);
+$routes->get('/admin/manage_anggota/new', 'adminController::newAnggota', ['filter' => 'admin']);
+$routes->post('/admin/manage_anggota/store', 'adminController::storeAnggota', ['filter' => 'admin']);
+$routes->get('/admin/manage_anggota/edit/(:num)', 'adminController::editAnggota/$1', ['filter' => 'admin']);
+$routes->post('/admin/manage_anggota/update/(:num)', 'adminController::updateAnggota/$1', ['filter' => 'admin']);
+$routes->delete('/admin/manage_anggota/delete/(:num)', 'adminController::deleteAnggota/$1', ['filter' => 'admin']);
+
+
 $routes->get('/admin/manage_komponen', 'AdminController::komponen', ['filter' => 'admin']);
 $routes->get('/admin/manage_penggajian', 'AdminController::penggajian', ['filter' => 'admin']);
+$routes->post('/admin/manage_penggajian', 'AdminController::penggajian', ['filter' => 'admin']);
 
 //public
 $routes->get('/public/anggota', 'PublicController::anggota', ['filter' => 'auth']);
