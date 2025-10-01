@@ -108,7 +108,7 @@
                         <td>${c.jabatan}</td>
                         <td>${c.status_pernikahan}</td>
                         <td>
-                            //edithapus
+                            <button class="btn btn-danger btn-sm del" data-id="${c.id_anggota}">Hapus</button>
                         </td>
                     `;
                     tableAnggota.appendChild(tr);
@@ -118,7 +118,48 @@
             render(anggotaData);
 
             //delete
-            
+            tableAnggota.addEventListener('click', e => {
+                if (e.target.classList.contains('del')) {
+                    id = e.target.dataset.id;
+                    nama = e.target.closest('tr').children[1].textContent; // Ambil nama dari baris tabel
+
+                    document.getElementById("deleteMessage").textContent=`Apakah anda yakin ingin menghapus anggota dengan nama depan "${nama}" ?`;
+
+                    const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"))
+                    deleteModal.show();
+                }
+
+                //delete button
+                document.getElementById("confirmDeleteBtn").addEventListener('click', () => {
+                    if (!id) return;
+
+                    fetch(`<?= base_url('admin/manage_anggota/delete') ?>/${id}`,{
+                        method: 'DELETE',
+                        headers: {'X-Requested-With' : 'XMLHttpRequest'}
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            const index = anggotaData.findIndex(c => c.id_anggota == id);
+                            if (index >= 0) {
+                                anggotaData.splice(index,1);
+                                render(anggotaData);
+                                showAlert(`<strong>Sukses!</strong> Anggota "${nama}" berhasil dihapus.`);
+                            }
+                        } else {
+                            showAlert(`<strong>Gagal!</strong> ${result.message || 'Terjadi kesalahan di server.'}`, 'danger');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showAlert('<strong>Error!</strong> Tidak dapat terhubung ke server.', 'danger');
+                    });
+
+                    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                });
+
+                
+            });
 
         });
     </script>

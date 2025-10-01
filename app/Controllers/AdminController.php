@@ -99,7 +99,15 @@ class AdminController extends BaseController
             ->with('message', 'Mahasiswa berhasil ditambahkan!');
     }
 
-    
+    public function deleteAnggota($id)
+    {
+        $anggotaModel = new anggotaModel();
 
+        $anggotaModel->delete($id);
+
+        return $this->response->setJSON(['success'=> true]);
+    }
+
+    
     
 }
