@@ -10,18 +10,17 @@ class PublicController extends BaseController
 {
     public function anggota()
     {
+        //ambil data dari database
         $anggotaModel = new AnggotaModel();
         $anggota_data = $anggotaModel->findAll();
 
-
         $data = [
             'title' => 'Manage Anggota',
-            'content' => view('admin/adminAnggota', ['anggota' => $anggota_data])
+            'content' => view('public/publicAnggota', ['anggota' => $anggota_data])
         ];
 
         return view('template', $data);
     }
-
     public function penggajian()
     {
         $komponenModel = new KomGajiModel();
@@ -30,7 +29,7 @@ class PublicController extends BaseController
 
         $data = [
             'title' => 'Manage Anggota',
-            'content' => view('admin/adminKomponen', ['komponen' => $komponen_data])
+            'content' => view('public/publicKomponen', ['komponen' => $komponen_data])
         ];
 
         return view('template', $data);

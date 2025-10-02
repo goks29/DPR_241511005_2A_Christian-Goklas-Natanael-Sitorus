@@ -19,7 +19,6 @@
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-dark text-center">
                     <tr>
-                        <th>ID</th>
                         <th>Nama Komponen</th>
                         <th>Kategori</th>
                         <th>Jabatan</th>
@@ -31,11 +30,10 @@
                     <?php if (!empty($komponen)): ?>
                         <?php foreach($komponen as $k): ?>
                             <tr>
-                                <td class="text-center"><?= esc($k['id_komponen_gaji']) ?></td>
                                 <td><?= esc($k['nama_komponen']) ?></td>
                                 <td><?= esc($k['kategori']) ?></td>
                                 <td><?= esc($k['jabatan']) ?></td>
-                                <td class="text-end"><?= number_format($k['nominal'], 2, ',', '.') ?></td>
+                                <td class="text-end">Rp.<?= number_format($k['nominal'], 2, ',', '.') ?></td>
                                 <td class="text-center"><?= esc($k['satuan']) ?></td>
                             </tr>
                         <?php endforeach ?>

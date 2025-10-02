@@ -45,7 +45,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="password" class="form-label">Nama Belakang</label>
+            <label for="nama_belakang" class="form-label">Nama Belakang</label>
             <input 
                 type="text" 
                 id="nama_belakang" 
@@ -79,24 +79,23 @@
 
         <div class="mb-3">
             <label for="jabatan" class="form-label">Jabatan</label>
-            <input 
-                type="text" 
-                id="jabatan" 
-                name="jabatan" 
-                class="form-control" 
-                value="<?= esc($user['jabatan'])?>"
-                required>
+            <select id="jabatan" name="nama_depan" class="form-select" required>
+                <option value="" selected disabled><?= esc($user['jabatan'])?></option>
+                <option value="Ketua">Ketua</option>
+                <option value="Wakil Ketua">Wakil Ketua</option>
+                <option value="Anggota">Anggota</option>
+            </select>
         </div>
 
         <div class="mb-3">
             <label for="status_pernikahan" class="form-label">Status Pernikahan</label>
-            <input 
-                type="text" 
-                id="status_pernikahan" 
-                name="status_pernikahan" 
-                class="form-control" 
-                value="<?= esc($user['status_pernikahan'])?>"
-                required>
+            <select id="status_pernikahan" name="status_pernikahan" class="form-select" required>
+                <option value="" selected disabled><?= esc($user['status_pernikahan'])?></option>
+                <option value="Kawin">Kawin</option>
+                <option value="Belum Kawin">Belum Kawin</option>
+                <option value="Cerai Hidup">Cerai Hidup</option>
+                <option value="Cerai Mati">Cerai Mati</option>
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Update</button>

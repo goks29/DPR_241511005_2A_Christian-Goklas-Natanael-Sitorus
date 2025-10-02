@@ -183,10 +183,14 @@
                                 .then(res => res.json())
                                 .then(result => {
                                     if (result.success) {
-                                        const index = anggotaData.findIndex(c => c.id == id);
+                                        const index = anggotaData.findIndex(c => c.id_anggota == id);
                                         if (index >= 0) {
                                             anggotaData[index].nama_depan  = formData.get('nama_depan');
                                             anggotaData[index].nama_belakang = formData.get('nama_belakang');
+                                            anggotaData[index].gelar_depan = formData.get('gelar_depan');
+                                            anggotaData[index].gelar_belakang = formData.get('gelar_belakang');
+                                            anggotaData[index].jabatan = formData.get('jabatan');
+                                            anggotaData[index].status_pernikahan = formData.get('status_pernikahan');
                                             render(anggotaData);
                                         }
                                         showAlert(`<strong>Sukses!</strong> Anggota berhasil diperbarui.`);

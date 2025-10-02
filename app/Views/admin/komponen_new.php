@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Tambah Anggota</title>
+    <title>Tambah Komponen</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -15,7 +15,7 @@
 </head>
 <body class="container my-4">
 
-    <h3 class="mb-4">Tambah Anggota</h3>
+    <h3 class="mb-4">Tambah Komponen</h3>
 
     <?php if (session()->getFlashdata('error')): ?>
             <div class="alert alert-danger"><?= session()->getFlashdata('error') ?></div>
@@ -31,46 +31,26 @@
             </div>
         <?php endif; ?>
 
-    <form method="post" action="<?= base_url('admin/manage_anggota/store') ?>">
+    <form method="post" action="<?= base_url('admin/manage_komponen/store') ?>">
 
         <div class="mb-3">
-            <label for="nama_depan" class="form-label">Nama Depan</label>
+            <label for="nama_komponen" class="form-label">Nama Komponen</label>
             <input 
                 type="text" 
-                id="nama_depan" 
-                name="nama_depan" 
+                id="nama_komponen" 
+                name="nama_komponen" 
                 class="form-control" 
                 required>
         </div>
 
         <div class="mb-3">
-            <label for="nama_belakang" class="form-label">Nama Belakang</label>
-            <input 
-                type="text" 
-                id="nama_belakang" 
-                name="nama_belakang" 
-                class="form-control" 
-                required>
-        </div>
-
-        <div class="mb-3">
-            <label for="gelar_depan" class="form-label">Gelar Depan</label>
-            <input 
-                type="text" 
-                id="gelar_depan" 
-                name="gelar_depan" 
-                class="form-control" 
-                >
-        </div>
-
-        <div class="mb-3">
-            <label for="gelar_belakang" class="form-label">Gelar Belakang</label>
-            <input 
-                type="text" 
-                id="gelar_belakang" 
-                name="gelar_belakang" 
-                class="form-control" 
-                >
+            <label for="kategori" class="form-label">Kategori</label>
+            <select id="kategori" name="kategori" class="form-select" required>
+                <option value="" selected disabled>-- Pilih Status --</option>
+                <option value="Gaji Pokok">Gaji Pokok</option>
+                <option value="Tunjangan Melekat">Tunjangan Melekat</option>
+                <option value="Tunjangan Lain">Tunjangan Lain</option>
+            </select>
         </div>
 
         <div class="mb-3">
@@ -79,23 +59,32 @@
                 <option value="" selected disabled>-- Pilih Status --</option>
                 <option value="Ketua">Ketua</option>
                 <option value="Wakil Ketua">Wakil Ketua</option>
-                <option value="Anggota">Anggota</option>
+                <option value="Semua">Semua</option>
             </select>
         </div>
 
         <div class="mb-3">
-            <label for="status_pernikahan" class="form-label">Status Pernikahan</label>
-            <select id="status_pernikahan" name="status_pernikahan" class="form-select" required>
+            <label for="nominal" class="form-label">Nominal</label>
+            <input 
+                type="number" 
+                id="nominal" 
+                name="nominal" 
+                class="form-control" 
+                >
+        </div>
+
+        <div class="mb-3">
+            <label for="satuan" class="form-label">Satuan</label>
+            <select id="satuan" name="satuan" class="form-select" required>
                 <option value="" selected disabled>-- Pilih Status --</option>
-                <option value="Kawin">Kawin</option>
-                <option value="Belum Kawin">Belum Kawin</option>
-                <option value="Cerai Hidup">Cerai Hidup</option>
-                <option value="Cerai Mati">Cerai Mati</option>
+                <option value="Hari">Hari</option>
+                <option value="Bulan">Bulan</option>
+                <option value="Periode">Periode</option>
             </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Simpan</button>
-        <a href="<?= base_url('admin/manage_anggota')?>" class="btn btn-secondary ms-2">Batal</a>
+        <a href="<?= base_url('admin/manage_komponen')?>" class="btn btn-secondary ms-2">Batal</a>
     </form>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

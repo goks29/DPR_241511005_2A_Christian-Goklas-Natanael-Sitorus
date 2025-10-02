@@ -183,5 +183,88 @@ class AdminController extends BaseController
         return $this->response->setJSON(['success' => true]);
     }
     
+    public function manageKomponen()
+    {
+        //ambil data dari database
+        $KomGajiModel = new KomGajiModel();
+        $KomGaji_data = $KomGajiModel->findAll();
+
+        $data = [
+            'title' => 'Manage Komponen',
+            'content' => view('admin/adminKomponen', ['komponen' => $KomGaji_data])
+        ];
+
+        return view('template', $data);
+    }
+
+    public function newKomponen()
+    {
+        $data = [
+            'title'  => 'Add Komponen',
+            'content' => view('admin/komponen_new')
+        ];
+
+        return view('template', $data);
+    }
     
+    public function storeKomponen()
+    {
+        $validationRules = [
+            'nama_komponen' => [
+                'rules'  => 'required|min_length[2]',
+                'errors' => [
+                    'required'   => 'Nama depan wajib diisi.',
+                    'min_length' => 'Nama depan minimal 2 karakter.'
+                ]
+            ],
+            'kategori' => [
+                'rules'  => 'required|in_list[Gaji Pokok,Tunjangan Melekat,Tunjangan Lain]',
+                'errors' => [
+                    'required'   => 'Nama belakang wajib diisi.',
+                    'in_list'    => 'Kategori harus salah satu dari: Gaji Pokok, Tunjangan Melekat, atau Tunjangan Lain.'
+                ]
+            ],
+            'jabatan' => [
+                'rules'  => 'required|in_list[Ketua,Wakil Ketua,Semua]',
+                'errors' => [
+                    'required' => 'Jabatan wajib diisi.',
+                    'in_list'  => 'Jabatan harus salah satu dari: Ketua, Wakil Ketua, atau Semua.'
+                ]
+            ],
+            'nominal' => [
+                'rules'  => 'required|regex_match[/^[0-9]+(\.[0-9]{2})$/]',
+                'errors' => [
+                    'required'    => 'Nominal wajib diisi.',
+                    'regex_match' => 'Nominal harus dalam format desimal dengan 2 angka di belakang koma, contoh: 100.00'
+                ]
+            ],
+            'satuan' => [
+                'rules'  => 'required|in_list[Bulan,Hari,Periode]',
+                'errors' => [
+                    'required' => 'Jabatan wajib diisi.',
+                    'in_list'  => 'Jabatan harus salah satu dari: Bulan, Hari, atau Periode.'
+                ]
+            ]
+        ];
+
+
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+        }
+
+        $KomGajiModel = new KomGajiModel();
+
+        $data = [
+            'nama_komponen'  => $this->request->getPost('nama_komponen'),
+            'kategori'       => $this->request->getPost('kategori'),
+            'jabatan'        => $this->request->getPost('jabatan'),
+            'nominal'        => $this->request->getPost('nominal'),
+            'satuan'         => $this->request->getPost('satuan')
+        ];                                                          
+
+        $KomGajiModel->insert($data);
+
+        return redirect()->to(base_url('admin/manage_komponen'))
+            ->with('message', 'Komponen Gaji berhasil ditambahkan!');
+    }
 }

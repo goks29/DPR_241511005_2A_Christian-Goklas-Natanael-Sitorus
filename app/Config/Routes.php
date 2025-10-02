@@ -16,6 +16,12 @@ $routes->get('/admin/manage_anggota/edit/(:num)', 'adminController::editAnggota/
 $routes->post('/admin/manage_anggota/update/(:num)', 'adminController::updateAnggota/$1', ['filter' => 'admin']);
 $routes->delete('/admin/manage_anggota/delete/(:num)', 'adminController::deleteAnggota/$1', ['filter' => 'admin']);
 
+$routes->get('/admin/manage_komponen', 'adminController::manageKomponen', ['filter' => 'admin']);
+$routes->get('/admin/manage_komponen/new', 'adminController::newKomponen', ['filter' => 'admin']);
+$routes->post('/admin/manage_komponen/store', 'adminController::storeKomponen', ['filter' => 'admin']);
+$routes->get('/admin/manage_komponen/edit/(:num)', 'adminController::editKomponen/$1', ['filter' => 'admin']);
+$routes->post('/admin/manage_komponen/update/(:num)', 'adminController::updateKomponen/$1', ['filter' => 'admin']);
+$routes->delete('/admin/manage_komponen/delete/(:num)', 'adminController::deleteKomponen/$1', ['filter' => 'admin']);
 
 $routes->get('/admin/manage_komponen', 'AdminController::komponen', ['filter' => 'admin']);
 $routes->get('/admin/manage_penggajian', 'AdminController::penggajian', ['filter' => 'admin']);
