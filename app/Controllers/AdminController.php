@@ -267,4 +267,15 @@ class AdminController extends BaseController
         return redirect()->to(base_url('admin/manage_komponen'))
             ->with('message', 'Komponen Gaji berhasil ditambahkan!');
     }
+
+    public function deleteKomponen($id)
+    {
+        $KomGajiModel = new KomGajiModel();
+
+        $KomGajiModel->delete($id);
+
+        return $this->response->setJSON(['success'=> true]);
+    }
+
+    
 }
