@@ -108,6 +108,8 @@
                         <td>${c.satuan}</td>
                         <td>
                             <button class="btn btn-danger btn-sm del" data-id="${c.id_komponen_gaji}">Hapus</button>
+                            <button class="btn btn-info btn-sm edit" data-id=${c.id_komponen_gaji}>edit</button>
+
                         </td>
                     `;
                     tableKomponen.appendChild(tr);
@@ -157,10 +159,55 @@
                     bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
                 });
 
+                //edit
+
+                if (e.target.classList.contains('edit')) {
+                const id = e.target.dataset.id;
+                const modalEl = document.getElementById('editModal');
+                const editModal = new bootstrap.Modal(modalEl);
+
+                fetch(`<?= base_url('admin/manage_komponen/edit') ?>/${id}`)
+                    .then(res => res.text())
+                    .then(html => {
+                        const modalBody = modalEl.querySelector('.modal-body');
+                        modalBody.innerHTML = html;
+
+                        editModal.show();
+
+                        const form = modalBody.querySelector('form');
+                        form.addEventListener('submit', function(ev) {
+                            ev.preventDefault();
+
+                            const formData = new FormData(form);
+                            fetch(form.action, { method: 'POST', body: formData })
+                                .then(res => res.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        const index = komponenData.findIndex(c => c.id_komponen_gaji == id);
+                                        if (index >= 0) {
+                                            komponenData[index].nama_komponen  = formData.get('nama_komponen');
+                                            komponenData[index].kategori = formData.get('kategori');
+                                            komponenData[index].jabatan = formData.get('jabatan');
+                                            komponenData[index].nominal = formData.get('nominal');
+                                            komponenData[index].satuan = formData.get('satuan');
+                                            render(komponenData);
+                                        }
+                                        showAlert(`<strong>Sukses!</strong> Komponen berhasil diperbarui.`);
+                                        editModal.hide();
+                                    } else {
+                                        showAlert(`<strong>Gagal!</strong> ${result.message || 'Terjadi kesalahan.'}`, 'danger');
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    showAlert('<strong>Error!</strong> Tidak dapat terhubung ke server.', 'danger');
+                                });
+                        });
+                    });
+                }
             });
 
-
-
+                
         });
     </script>
 
