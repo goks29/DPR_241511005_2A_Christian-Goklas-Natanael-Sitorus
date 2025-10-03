@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\AnggotaModel;
 use App\Models\KomGajiModel;
+use App\Models\PenggajianModel;
 use App\Models\penggunaModel;
 
 class AdminController extends BaseController
@@ -344,5 +345,17 @@ class AdminController extends BaseController
         $KomGajiModel->update($id, $data);
 
         return $this->response->setJSON(['success' => true]);
+    }
+
+    public function managePenggajian() {
+        $penggajianModel = new PenggajianModel();
+        $data_penggajian = $penggajianModel->getPenggajianDetails();
+
+        $data = [
+            'title'   => 'Manage Penggajian',
+            'content' => view('admin/adminPenggajian', ['penggajian' => $data_penggajian])
+        ];
+
+        return view('template', $data);
     }
 }
