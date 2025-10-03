@@ -411,4 +411,12 @@ class AdminController extends BaseController
 
         return redirect()->to('admin/manage_penggajian')->with('message', 'Data penggajian berhasil ditambahkan. ');
     }
+
+    public function deletePenggajian($id) {
+        $penggajianModel = new PenggajianModel();
+
+        $penggajianModel->where('id_anggota',$id)->delete();
+
+        return $this->response->setJSON(['success'=> true]);
+    }
 }

@@ -103,7 +103,7 @@
                         <td>${c.jabatan}</td>
                         <td>${ "Rp." + c.take_home_pay}</td>
                         <td>
-                            
+                            <button class="btn btn-danger btn-sm del" data-id="${c.id_anggota}">Hapus</button>
                         </td>
                     `;
                     tablePenggajian.appendChild(tr);
@@ -112,7 +112,49 @@
 
             render(penggajianData);
 
-            
+            //delete
+            tablePenggajian.addEventListener('click', e => {
+                if (e.target.classList.contains('del')) {
+                    id = e.target.dataset.id;
+                    nama = e.target.closest('tr').children[1].textContent;
+
+                    document.getElementById("deleteMessage").textContent=`Apakah anda yakin ingin menghapus gaji ini?`
+
+                    const deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"))
+                    deleteModal.show();
+                }
+
+                //delete button
+                document.getElementById("confirmDeleteBtn").addEventListener('click', () => {
+                    if (!id) return;
+
+                    fetch(`<?= base_url('admin/manage_penggajian/delete')?>/${id}`,{
+                        method: 'DELETE',
+                        headers: {'X-Requested-With' : 'XMLHttpRequest'}
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            const index = penggajianData.findIndex(c => c.id_anggota == id);
+                            if (index >= 0) {
+                                penggajianData.splice(index,1);
+                                render(penggajianData);
+                                showAlert(`<strong>Sukses!</strong> Gaji berhasil dihapus.`);
+                            }
+                        } else {
+                            showAlert(`<strong>Gagal!</strong> ${result.message || 'Terjadi kesalahan di server.'}`, 'danger');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        showAlert('<strong>Error!</strong> Tidak dapat terhubung ke server.', 'danger');
+                    });
+
+                    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                });
+
+
+            })
                 
         });
     </script>
