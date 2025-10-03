@@ -358,4 +358,57 @@ class AdminController extends BaseController
 
         return view('template', $data);
     }
+
+    public function newPenggajian()
+    {
+        $anggotaModel = new AnggotaModel();
+        $komponenModel = new KomGajiModel();
+
+        $contentData = [
+            'anggota' => $anggotaModel->findAll(),
+            'komponen' => $komponenModel->findAll()
+        ];
+
+        $data = [
+            'title'  => 'Add Penggajian',
+            'content' => view('admin/penggajian_new', $contentData)
+        ];
+
+        return view('template', $data);
+    }
+    
+
+    public function storePenggajian() {
+        $penggajianModel = new PenggajianModel();
+        $anggotaModel = new AnggotaModel();
+        $KomGajiModel = new KomGajiModel();
+
+        $id_anggota = $this->request->getPost('id_anggota');
+        $id_komponen_gaji = $this->request->getPost('id_komponen_gaji');
+
+        //validasi duplikasi
+        $exist = $penggajianModel->where([
+            'id_anggota'       => $id_anggota,
+            'id_komponen_gaji' => $id_komponen_gaji
+        ])->first();
+
+        if($exist) {
+            return redirect()->back()->with('error', 'Komponen gaji sudah ditambahkan untuk anggota ini.');
+        }
+
+        //validasi jabatan
+        $anggota = $anggotaModel->find($id_anggota);
+        $komponen = $KomGajiModel->find($id_komponen_gaji);
+
+        if($komponen['jabatan'] !== 'Semua' && $komponen['jabatan'] !== $anggota['jabatan']) {
+            return redirect()->back()->with('error', 'Komponen gaji ini tidak sesuai untuk jabatan ' . $anggota['jabatan']);
+        }
+
+        $penggajianModel->insert([
+            'id_anggota'       => $id_anggota,
+            'id_komponen_gaji' => $id_komponen_gaji
+        ]);
+
+        return redirect()->to('admin/manage_penggajian')->with('message', 'Data penggajian berhasil ditambahkan. ');
+    }
 }

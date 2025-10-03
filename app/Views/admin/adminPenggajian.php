@@ -36,7 +36,7 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h3>Daftar Penggajian</h3>
-        <a href="<?= base_url('/admin/manage_komponen/new') ?>" class="btn btn-success">Tambah Gaji dan Tunjangan</a>
+        <a href="<?= base_url('/admin/manage_penggajian/new') ?>" class="btn btn-success">Tambah Gaji</a>
     </div>
 
     <table class="table table-bordered table-striped">
@@ -44,7 +44,6 @@
             <tr>
                 <th>ID</th>
                 <th>Nama Lengkap</th>
-                <th>Kategori</th>
                 <th>Jabatan</th>
                 <th>Gaji (Bulanan)</th>
                 <th>Action</th>
