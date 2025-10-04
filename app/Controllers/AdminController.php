@@ -488,4 +488,25 @@ class AdminController extends BaseController
         ]);
     }
 
+    public function detailPenggajian($id) {
+        $anggotaModel = new AnggotaModel();
+        $penggajianModel = new PenggajianModel();
+        $komponenModel = new KomGajiModel();
+
+        $anggota = $anggotaModel->find($id);
+
+        $komponen_dimiliki = $penggajianModel->getKomponenByAnggotaId($id);
+        
+        $komponen_tersedia = $komponenModel->findAll();
+
+        $data = [
+            'title'             => 'Edit Penggajian',
+            'user'              => $anggota,
+            'komponen_dimiliki' => $komponen_dimiliki,
+            'komponen_tersedia' => $komponen_tersedia,
+        ];
+
+        return view('admin/penggajian_detail', $data);
+    }
+
 }

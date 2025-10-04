@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <title>Manajemen Penggajian</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Poppins', sans-serif; }
@@ -30,7 +28,7 @@
                 </div>
             </div>
         </div>
-    </div
+    </div>
 
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -65,6 +63,19 @@
         </div>
     </div>
 
+    <!-- Modal Detail -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Penggajian</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body"><!-- Isi via AJAX --></div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const penggajianData = <?= json_encode($penggajian) ?>;
         let selectedDeleteId = null;
@@ -79,20 +90,18 @@
                 </div>
             `;
             document.body.prepend(alertPlaceholder);
-
             setTimeout(() => {
                 const alert = bootstrap.Alert.getOrCreateInstance(alertPlaceholder.querySelector('.alert'));
                 alert.close();
             }, 3000);
         }
 
-        // Render data ke tabel
         document.addEventListener('DOMContentLoaded', () => {
             const tablePenggajian = document.getElementById('penggajian');
-            const deleteModalEl = document.getElementById('deleteModal');
-            const deleteModal = new bootstrap.Modal(deleteModalEl);
+            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
             const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
 
+            // ender data ke tabel
             function render(data) {
                 tablePenggajian.innerHTML = '';
                 data.forEach(c => {
@@ -105,6 +114,7 @@
                         <td>
                             <button class="btn btn-danger btn-sm del" data-id="${c.id_anggota}" data-nama="${c.nama_depan} ${c.nama_belakang}">Hapus</button>
                             <button class="btn btn-info btn-sm edit" data-id="${c.id_anggota}">Edit</button>
+                            <button class="btn btn-primary btn-sm detail" data-id="${c.id_anggota}">Detail</button>
                         </td>
                     `;
                     tablePenggajian.appendChild(tr);
@@ -113,10 +123,13 @@
 
             render(penggajianData);
 
-            // Event edit
+            // Event tombol di tabel (delegate)
             tablePenggajian.addEventListener('click', e => {
-                if (e.target.classList.contains('edit')) {
-                    const id = e.target.dataset.id;
+                const target = e.target;
+
+                // Edit
+                if (target.classList.contains('edit')) {
+                    const id = target.dataset.id;
                     const modalEl = document.getElementById('editModal');
                     const editModal = new bootstrap.Modal(modalEl);
 
@@ -128,7 +141,7 @@
                             editModal.show();
 
                             const form = modalBody.querySelector('form');
-                            form.addEventListener('submit', function(ev) {
+                            form.addEventListener('submit', ev => {
                                 ev.preventDefault();
                                 const formData = new FormData(form);
 
@@ -152,16 +165,39 @@
                         });
                 }
 
-                // Event hapus (tampilkan modal)
-                if (e.target.classList.contains('del')) {
-                    selectedDeleteId = e.target.dataset.id;
-                    const nama = e.target.dataset.nama;
-                    document.getElementById('deleteMessage').textContent = `Apakah Anda yakin ingin menghapus data gaji milik ${nama}?`;
+                // Hapus
+                if (target.classList.contains('del')) {
+                    selectedDeleteId = target.dataset.id;
+                    const nama = target.dataset.nama;
+                    document.getElementById('deleteMessage').textContent =
+                        `Apakah Anda yakin ingin menghapus data gaji milik ${nama}?`;
                     deleteModal.show();
+                }
+
+                // Detail
+                if (target.classList.contains('detail')) {
+                    const id = target.dataset.id;
+                    const modalEl = document.getElementById('detailModal');
+                    const detailModal = new bootstrap.Modal(modalEl);
+
+                    fetch(`<?= base_url('admin/manage_penggajian/detail') ?>/${id}`)
+                        .then(res => res.text())
+                        .then(html => {
+                            const modalBody = modalEl.querySelector('.modal-body');
+                            modalBody.innerHTML = html;
+
+                            // Format nominal
+                            modalBody.querySelectorAll('.nominal').forEach(el => {
+                                const val = parseFloat(el.textContent || 0);
+                                el.textContent = 'Rp ' + val.toLocaleString('id-ID');
+                            });
+                            
+                            detailModal.show();
+                        })
+                        .catch(() => showAlert('<strong>Error!</strong> Tidak dapat memuat detail gaji.', 'danger'));
                 }
             });
 
-            // Konfirmasi hapus (klik tombol "Hapus" di modal)
             confirmDeleteBtn.addEventListener('click', () => {
                 if (!selectedDeleteId) return;
 
@@ -189,19 +225,11 @@
     </script>
 
     <?php if (session()->getFlashdata('message')): ?>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showAlert("<?= session()->getFlashdata('message') ?>");
-        });
-    </script>
+    <script>document.addEventListener("DOMContentLoaded", () => showAlert("<?= session()->getFlashdata('message') ?>"));</script>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')): ?>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            showAlert("<?= session()->getFlashdata('error') ?>", "danger");
-        });
-    </script>
+    <script>document.addEventListener("DOMContentLoaded", () => showAlert("<?= session()->getFlashdata('error') ?>", "danger"));</script>
     <?php endif; ?>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
