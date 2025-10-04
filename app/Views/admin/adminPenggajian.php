@@ -6,7 +6,71 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; }
+        :root {
+            --primary-color: #003366; 
+            --secondary-color: #6c757d; 
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --light-bg: #f4f6f9;
+            --card-border-radius: 0.75rem;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+        }
+        .card {
+            border-radius: var(--card-border-radius);
+            border: none;
+        }
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #dee2e6;
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            overflow: hidden;
+            border-radius: var(--card-border-radius);
+        }
+        .table thead th {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            vertical-align: middle;
+        }
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #002244;
+            border-color: #002244;
+        }
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        .btn-info {
+            background-color: var(--info-color);
+            border-color: var(--info-color);
+            color: #fff;
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        .modal-header {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
     </style>
 </head>
 <body class="container my-4">
@@ -35,6 +99,13 @@
         <h3>Daftar Penggajian</h3>
         <a href="<?= base_url('/admin/manage_penggajian/new') ?>" class="btn btn-success">Tambah Gaji</a>
     </div>
+
+    <form method="get" action="<?= base_url('/admin/manage_penggajian') ?>" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari anggota..." value="<?= esc(request()->getGet('search')) ?>">
+            <button class="btn btn-primary" type="submit">Cari</button>
+        </div>
+    </form>
 
     <!-- Tabel -->
     <table class="table table-bordered table-striped">
@@ -191,13 +262,13 @@
                                 const val = parseFloat(el.textContent || 0);
                                 el.textContent = 'Rp ' + val.toLocaleString('id-ID');
                             });
-                            
+
                             detailModal.show();
                         })
                         .catch(() => showAlert('<strong>Error!</strong> Tidak dapat memuat detail gaji.', 'danger'));
                 }
             });
-
+            //confirm delete
             confirmDeleteBtn.addEventListener('click', () => {
                 if (!selectedDeleteId) return;
 

@@ -11,9 +11,18 @@ class AdminController extends BaseController
 {
     public function manageAnggota()
     {
-        //ambil data dari database
         $anggotaModel = new AnggotaModel();
-        $anggota_data = $anggotaModel->findAll();
+        $search = $this->request->getGet('search');
+        
+        if ($search) {
+            $anggota_data = $anggotaModel->like('nama_depan', $search)
+                                        ->orLike('nama_belakang', $search)
+                                        ->orLike('jabatan', $search)
+                                        ->orLike('id_anggota', $search)
+                                        ->findAll();
+        } else {
+            $anggota_data = $anggotaModel->findAll();
+        }
 
         $data = [
             'title' => 'Manage Anggota',
@@ -75,6 +84,12 @@ class AdminController extends BaseController
                     'required' => 'Status pernikahan wajib diisi.',
                     'in_list'  => 'Status pernikahan harus salah satu dari: Kawin, Belum Kawin, Cerai Hidup, atau Cerai Mati.'
                 ]
+            ],
+            'jumlah_anak' => [
+                'rules'  => 'permit_empty|numeric',
+                'errors' => [
+                    'numeric' => 'Jumlah anak harus berupa angka.'
+                ]
             ]
         ];
 
@@ -91,7 +106,8 @@ class AdminController extends BaseController
             'gelar_depan'       => $this->request->getPost('gelar_depan'),
             'gelar_belakang'    => $this->request->getPost('gelar_belakang'),
             'jabatan'           => $this->request->getPost('jabatan'),
-            'status_pernikahan' => $this->request->getPost('status_pernikahan')
+            'status_pernikahan' => $this->request->getPost('status_pernikahan'),
+            'jumlah_anak'       => $this->request->getPost('jumlah_anak')
         ];                                                          
 
         $anggotaModel->insert($data);
@@ -160,6 +176,12 @@ class AdminController extends BaseController
                     'required' => 'Status pernikahan wajib diisi.',
                     'in_list'  => 'Status pernikahan harus salah satu dari: Kawin, Belum Kawin, Cerai Hidup, atau Cerai Mati.'
                 ]
+            ],
+            'jumlah_anak' => [
+                'rules'  => 'permit_empty|numeric',
+                'errors' => [
+                    'numeric' => 'Jumlah anak harus berupa angka.'
+                ]
             ]
         ];
 
@@ -176,7 +198,8 @@ class AdminController extends BaseController
             'gelar_depan'       => $this->request->getPost('gelar_depan'),
             'gelar_belakang'    => $this->request->getPost('gelar_belakang'),
             'jabatan'           => $this->request->getPost('jabatan'),
-            'status_pernikahan' => $this->request->getPost('status_pernikahan')
+            'status_pernikahan' => $this->request->getPost('status_pernikahan'),
+            'jumlah_anak'       => $this->request->getPost('jumlah_anak')
         ];
 
         $anggotaModel->update($id, $data);
@@ -186,9 +209,20 @@ class AdminController extends BaseController
     
     public function manageKomponen()
     {
-        //ambil data dari database
         $KomGajiModel = new KomGajiModel();
-        $KomGaji_data = $KomGajiModel->findAll();
+        $search = $this->request->getGet('search');
+
+        if ($search) {
+            $KomGaji_data = $KomGajiModel->like('nama_komponen', $search)
+                                        ->orLike('kategori', $search)
+                                        ->orLike('jabatan', $search)
+                                        ->orLike('nominal', $search)
+                                        ->orLike('satuan', $search)
+                                        ->orLike('id_komponen_gaji', $search)
+                                        ->findAll();
+        } else {
+            $KomGaji_data = $KomGajiModel->findAll();
+        }
 
         $data = [
             'title' => 'Manage Komponen',
@@ -233,10 +267,10 @@ class AdminController extends BaseController
                 ]
             ],
             'nominal' => [
-                'rules'  => 'required|regex_match[/^[0-9]+(\.[0-9]{2})$/]',
+                'rules'  => 'required|numeric',
                 'errors' => [
                     'required'    => 'Nominal wajib diisi.',
-                    'regex_match' => 'Nominal harus dalam format desimal dengan 2 angka di belakang koma, contoh: 100.00'
+                    'numeric' => 'Nominal harus berupa angka'
                 ]
             ],
             'satuan' => [
@@ -312,10 +346,10 @@ class AdminController extends BaseController
                 ]
             ],
             'nominal' => [
-                'rules'  => 'required|regex_match[/^[0-9]+(\.[0-9]{2})$/]',
+                'rules'  => 'required|numeric',
                 'errors' => [
                     'required'    => 'Nominal wajib diisi.',
-                    'regex_match' => 'Nominal harus dalam format desimal dengan 2 angka di belakang koma, contoh: 100.00'
+                    'numeric' => 'Nominal harus berupa angka'
                 ]
             ],
             'satuan' => [
@@ -349,7 +383,13 @@ class AdminController extends BaseController
 
     public function managePenggajian() {
         $penggajianModel = new PenggajianModel();
-        $data_penggajian = $penggajianModel->getPenggajianDetails();
+        $search = $this->request->getGet('search');
+
+        if ($search) {
+            $data_penggajian = $penggajianModel->search($search);
+        } else {
+            $data_penggajian = $penggajianModel->getPenggajianDetails();
+        }
 
         $data = [
             'title'   => 'Manage Penggajian',
@@ -473,7 +513,7 @@ class AdminController extends BaseController
             ])->setStatusCode(400);
         }
 
-        $penggajianModel->update([
+        $penggajianModel->insert([
             'id_anggota'       => $id_anggota,
             'id_komponen_gaji' => $idKomponen,
         ]);

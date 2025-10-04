@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\AnggotaModel;
 use App\Models\KomGajiModel;
+use App\Models\PenggajianModel;
 use App\Models\penggunaModel;
 
 class PublicController extends BaseController
@@ -23,13 +24,12 @@ class PublicController extends BaseController
     }
     public function penggajian()
     {
-        $komponenModel = new KomGajiModel();
-        $komponen_data = $komponenModel->findAll();
-
+        $penggajianModel = new PenggajianModel();
+        $data_penggajian = $penggajianModel->getPenggajianDetails();
 
         $data = [
-            'title' => 'Manage Anggota',
-            'content' => view('public/publicKomponen', ['komponen' => $komponen_data])
+            'title'   => 'Manage Penggajian',
+            'content' => view('public/publicPenggajian', ['penggajian' => $data_penggajian])
         ];
 
         return view('template', $data);

@@ -131,25 +131,23 @@ class PenggajianModel extends Model
             ->getResultArray();
     }
 
-    public function updatePenggajian($id_anggota)
+    public function search($keyword)
     {
-        $penggajianModel = new PenggajianModel();
-        $idKomponen = $this->request->getPost('id_komponen_gaji');
+        $details = $this->getPenggajianDetails();
+        
+        if (empty($keyword)) {
+            return $details;
+        }
 
-        $penggajianModel->insert([
-            'id_anggota'       => $id_anggota,
-            'id_komponen_gaji' => $idKomponen,
-        ]);
+        $keyword = strtolower($keyword);
         
-        $newPenggajianModel = new PenggajianModel();
-        $updatedData = $newPenggajianModel->getPenggajianDetailsById($id_anggota);
-        
-        return $this->response->setJSON([
-            'success'       => true,
-            'take_home_pay' => $updatedData['take_home_pay'] ?? 0
-        ]);
+        return array_filter($details, function ($row) use ($keyword) {
+            return str_contains(strtolower($row['nama_depan']), $keyword) ||
+                   str_contains(strtolower($row['nama_belakang']), $keyword) ||
+                   str_contains(strtolower($row['jabatan']), $keyword) ||
+                   str_contains((string)$row['take_home_pay'], $keyword) ||
+                   str_contains((string)$row['id_anggota'], $keyword);
+        });
     }
 
 }
-
-

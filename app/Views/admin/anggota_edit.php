@@ -94,6 +94,16 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="jumlah_anak" class="form-label">Jumlah Anak</label>
+            <input 
+                type="text" 
+                id="jumlah_anak" 
+                name="jumlah_anak" 
+                class="form-control" 
+                value="<?= esc($user['jumlah_anak'])?>">
+        </div>
+
         <button type="submit" class="btn btn-primary">Update</button>
     </form>
 

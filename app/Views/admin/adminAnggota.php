@@ -8,8 +8,71 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #003366; 
+            --secondary-color: #6c757d; 
+            --success-color: #198754;
+            --danger-color: #dc3545;
+            --info-color: #0dcaf0;
+            --light-bg: #f4f6f9;
+            --card-border-radius: 0.75rem;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
+            background-color: var(--light-bg);
+        }
+        .card {
+            border-radius: var(--card-border-radius);
+            border: none;
+        }
+        .card-header {
+            background-color: transparent;
+            border-bottom: 1px solid #dee2e6;
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .table {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-color: #dee2e6ff;
+            overflow: hidden;
+            border-radius: var(--card-border-radius);
+        }
+        .table thead th {
+            background-color: var(--primary-color);
+            color: #ffffff;
+            vertical-align: middle;
+        }
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .btn-primary:hover {
+            background-color: #002244;
+            border-color: #002244;
+        }
+        .btn-success {
+            background-color: var(--success-color);
+        }
+        .btn-info {
+            background-color: var(--info-color);
+            border-color: var(--info-color);
+            color: #fff;
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+        .modal-header {
+            background-color: var(--primary-color);
+            color: #ffffff;
+        }
+        .modal-header .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
         }
     </style>
 </head>
@@ -38,6 +101,13 @@
         <a href="<?= base_url('/admin/manage_anggota/new') ?>" class="btn btn-success">Tambah Anggota</a>
     </div>
 
+    <form method="get" action="<?= base_url('/admin/manage_anggota') ?>" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Cari anggota..." value="<?= esc(request()->getGet('search')) ?>">
+            <button class="btn btn-primary" type="submit">Cari</button>
+        </div>
+    </form>
+
     <table class="table table-bordered table-striped">
         <thead class="table-dark">
             <tr>
@@ -48,13 +118,13 @@
                 <th>Gelar Belakang</th>
                 <th>Jabatan</th>
                 <th>Status Pernikahan</th>
+                <th>Jumlah Anak</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody id="anggota"></tbody>
     </table>
 
-    <!-- modal -->
     <div class="modal fade" id="editModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -63,13 +133,11 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- isi form -->
-                </div>
+                    </div>
             </div>
         </div>
     </div>
 
-    <!-- ini untuk menampilkan, edit, hapus-->
     <script>
         const anggotaData = <?= json_encode($anggota) ?>;
 
@@ -107,6 +175,7 @@
                         <td>${c.gelar_belakang}</td>
                         <td>${c.jabatan}</td>
                         <td>${c.status_pernikahan}</td>
+                        <td>${c.jumlah_anak}</td>
                         <td>
                             <button class="btn btn-danger btn-sm del" data-id="${c.id_anggota}">Hapus</button>
                             <button class="btn btn-info btn-sm edit" data-id=${c.id_anggota}>edit</button>
@@ -191,6 +260,7 @@
                                             anggotaData[index].gelar_belakang = formData.get('gelar_belakang');
                                             anggotaData[index].jabatan = formData.get('jabatan');
                                             anggotaData[index].status_pernikahan = formData.get('status_pernikahan');
+                                            anggotaData[index].jumlah_anak = formData.get('jumlah_anak');
                                             render(anggotaData);
                                         }
                                         showAlert(`<strong>Sukses!</strong> Anggota berhasil diperbarui.`);

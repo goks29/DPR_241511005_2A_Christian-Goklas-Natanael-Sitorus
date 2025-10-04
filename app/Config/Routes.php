@@ -32,6 +32,7 @@ $routes->get('/admin/manage_penggajian/detail/(:num)', 'adminController::detailP
 //public
 $routes->get('/public/anggota', 'PublicController::anggota', ['filter' => 'auth']);
 $routes->get('/public/data_penggajian', 'PublicController::penggajian', ['filter' => 'auth']);
+$routes->get('/public/penggajian/detail/(:num)', 'publicController::detailPenggajian/$1', ['filter' => 'auth']);
 
 //login
 $routes->get('/', 'Auth::login');

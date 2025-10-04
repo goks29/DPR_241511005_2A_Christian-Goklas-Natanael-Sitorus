@@ -94,6 +94,16 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="jumlah_anak" class="form-label">Jumlah Anak</label>
+            <input 
+                type="number" 
+                id="jumlah_anak" 
+                name="jumlah_anak" 
+                class="form-control" 
+                >
+        </div>
+
         <button type="submit" class="btn btn-primary">Simpan</button>
         <a href="<?= base_url('admin/manage_anggota')?>" class="btn btn-secondary ms-2">Batal</a>
     </form>

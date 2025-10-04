@@ -2,10 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Manajemen Anggota</title>
+    <title>Manajemen Penggajian</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -77,50 +75,64 @@
     </style>
 </head>
 <body class="container my-4">
+
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h3>Daftar Anggota</h3>
+        <h3>Daftar Penggajian</h3>
     </div>
 
-    <table class="table table-bordered table-striped">
-        <thead class="table-dark">
+    <!-- Tabel -->
+    <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark text-center">
             <tr>
-                <th>Nama Depan</th>
-                <th>Nama Belakang</th>
-                <th>Gelar Depan</th>
-                <th>Gelar Belakang</th>
+                <th>ID</th>
+                <th>Nama Lengkap</th>
                 <th>Jabatan</th>
-                <th>Status Pernikahan</th>
+                <th>Gaji (Bulanan)</th>
             </tr>
         </thead>
-        <tbody id="anggota"></tbody>
+        <tbody id="penggajian"></tbody>
     </table>
 
-    <!-- ini untuk menampilkan-->
-    <script>
-        const anggotaData = <?= json_encode($anggota) ?>;
+    <!-- Modal Detail -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Penggajian</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body"><!-- Isi via AJAX --></div>
+            </div>
+        </div>
+    </div>
 
-        //createElement
+    <script>
+        const penggajianData = <?= json_encode($penggajian) ?>;
+
         document.addEventListener('DOMContentLoaded', () => {
-            const tableAnggota = document.getElementById('anggota');
-            
+            const tablePenggajian = document.getElementById('penggajian');
+
+            // Fungsi render tabel
             function render(data) {
-                tableAnggota.innerHTML = '';
+                tablePenggajian.innerHTML = '';
                 data.forEach(c => {
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${c.nama_depan}</td>
-                        <td>${c.nama_belakang}</td>
-                        <td>${c.gelar_depan}</td>
-                        <td>${c.gelar_belakang}</td>
+                        <td class="text-center">${c.id_anggota}</td>
+                        <td>${[c.gelar_depan, c.nama_depan, c.nama_belakang, c.gelar_belakang].filter(Boolean).join(' ')}</td>
                         <td>${c.jabatan}</td>
-                        <td>${c.status_pernikahan}</td>
+                        <td>Rp ${parseFloat(c.take_home_pay).toLocaleString('id-ID')}</td>
+                        </td>
                     `;
-                    tableAnggota.appendChild(tr);
+                    tablePenggajian.appendChild(tr);
                 });
             }
 
-            render(anggotaData);
+            render(penggajianData);
         });
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
