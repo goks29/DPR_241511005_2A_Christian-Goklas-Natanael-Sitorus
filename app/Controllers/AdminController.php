@@ -419,4 +419,73 @@ class AdminController extends BaseController
 
         return $this->response->setJSON(['success'=> true]);
     }
+
+    public function editPenggajian($id_anggota)
+    {
+        $anggotaModel = new AnggotaModel();
+        $penggajianModel = new PenggajianModel();
+        $komponenModel = new KomGajiModel();
+
+        $anggota = $anggotaModel->find($id_anggota);
+
+        $komponen_dimiliki = $penggajianModel->getKomponenByAnggotaId($id_anggota);
+        
+        $komponen_tersedia = $komponenModel->findAll();
+
+        $data = [
+            'title'             => 'Edit Penggajian',
+            'user'              => $anggota,
+            'komponen_dimiliki' => $komponen_dimiliki,
+            'komponen_tersedia' => $komponen_tersedia,
+        ];
+
+        return view('admin/penggajian_edit', $data);
+    }
+
+    public function updatePenggajian($id_anggota) 
+    {
+        $penggajianModel = new PenggajianModel();
+        $komponenModel   = new KomGajiModel();
+        $anggotaModel    = new AnggotaModel();
+
+        $idKomponen = $this->request->getPost('id_komponen_gaji');
+        $anggota = $anggotaModel->find($id_anggota);
+        $komponen = $komponenModel->find($idKomponen);
+
+        // Validasi jabatan
+        if ($komponen['jabatan'] !== 'Semua' && $komponen['jabatan'] !== $anggota['jabatan']) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal! Komponen ini tidak sesuai untuk jabatan ' . $anggota['jabatan'] . '.'
+            ])->setStatusCode(400); 
+        }
+        
+        // Validasi duplikat
+        $isExist = $penggajianModel->where([
+            'id_anggota' => $id_anggota,
+            'id_komponen_gaji' => $idKomponen
+        ])->first();
+
+        if ($isExist) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal! Komponen gaji ini sudah dimiliki oleh anggota.'
+            ])->setStatusCode(400);
+        }
+
+        $penggajianModel->update([
+            'id_anggota'       => $id_anggota,
+            'id_komponen_gaji' => $idKomponen,
+        ]);
+        
+        $newPenggajianModel = new PenggajianModel();
+        $updatedData = $newPenggajianModel->getPenggajianDetailsById($id_anggota);
+        
+        return $this->response->setJSON([
+            'success'       => true,
+            'message'       => 'Komponen berhasil ditambahkan!',
+            'take_home_pay' => $updatedData['take_home_pay'] ?? 0
+        ]);
+    }
+
 }

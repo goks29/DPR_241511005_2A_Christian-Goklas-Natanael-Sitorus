@@ -5,9 +5,6 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
-
-
 //routes admin
 $routes->get('/admin/manage_anggota', 'adminController::manageAnggota', ['filter' => 'admin']);
 $routes->get('/admin/manage_anggota/new', 'adminController::newAnggota', ['filter' => 'admin']);
@@ -29,6 +26,7 @@ $routes->post('/admin/manage_penggajian/store', 'adminController::storePenggajia
 $routes->get('/admin/manage_penggajian/edit/(:num)', 'adminController::editPenggajian/$1', ['filter' => 'admin']);
 $routes->post('/admin/manage_penggajian/update/(:num)', 'adminController::updatePenggajian/$1', ['filter' => 'admin']);
 $routes->delete('/admin/manage_penggajian/delete/(:num)', 'adminController::deletePenggajian/$1', ['filter' => 'admin']);
+$routes->delete('/admin/manage_penggajian/delete_component/(:num)/(:num)', 'AdminController::deletePenggajianComponent/$1/$2', ['filter' => 'admin']);
 
 
 //public

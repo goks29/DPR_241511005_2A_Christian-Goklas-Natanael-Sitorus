@@ -104,12 +104,11 @@
                         <td>${c.nama_komponen}</td>
                         <td>${c.kategori}</td>
                         <td>${c.jabatan}</td>
-                        <td>${c.nominal}</td>
+                        <td>Rp ${parseFloat(c.nominal).toLocaleString('id-ID')}</td>
                         <td>${c.satuan}</td>
                         <td>
                             <button class="btn btn-danger btn-sm del" data-id="${c.id_komponen_gaji}">Hapus</button>
                             <button class="btn btn-info btn-sm edit" data-id=${c.id_komponen_gaji}>edit</button>
-
                         </td>
                     `;
                     tableKomponen.appendChild(tr);

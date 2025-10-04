@@ -38,7 +38,7 @@ class PenggajianModel extends Model
                 if($p['id_anggota'] == $a['id_anggota']) {
                     foreach($komponen_gaji as $kg) {
                         if($kg['id_komponen_gaji'] === $p['id_komponen_gaji'] && $kg['satuan'] == 'Bulan') {
-                            if ($kg['nama_komponen'] !== 'Tujangan Istri/Suami' && $kg['nama_komponen'] !== 'Tujangan Anak') {
+                            if ($kg['nama_komponen'] !== 'Tunjangan Istri/Suami' && $kg['nama_komponen'] !== 'Tujangan Anak') {
                                 $total_gaji += $kg['nominal'];
                             }
                         }
@@ -69,6 +69,86 @@ class PenggajianModel extends Model
         return $result;
     }
 
+    public function getPenggajianDetailsById($id_anggota)
+    {
+        $anggota = $this->db->table('anggota')
+            ->where('id_anggota', $id_anggota)
+            ->get()
+            ->getRowArray();
+
+        if (!$anggota) {
+            return null;
+        }
+
+        $komponen_dimiliki = $this->getKomponenByAnggotaId($id_anggota);
+
+        $total_gaji = 0;
+
+        foreach ($komponen_dimiliki as $komponen) {
+            if ($komponen['satuan'] !== 'Bulan') {
+                continue;
+            }
+
+            switch ($komponen['nama_komponen']) {
+                case 'Tunjangan Istri/Suami':
+                    if ($anggota['status_pernikahan'] == 'Kawin') {
+                        $total_gaji += $komponen['nominal'];
+                    }
+                    break;
+
+                case 'Tunjangan Anak':
+                    if ($anggota['status_pernikahan'] == 'Kawin' && $anggota['jumlah_anak'] > 0) {
+                        $jumlah_anak_ditanggung = min((int)$anggota['jumlah_anak'], 2);
+                        $total_gaji += ($jumlah_anak_ditanggung * $komponen['nominal']);
+                    }
+                    break;
+
+                default:
+                    $total_gaji += $komponen['nominal'];
+                    break;
+            }
+        }
+
+        return [
+            'id_anggota'      => $anggota['id_anggota'],
+            'gelar_depan'     => $anggota['gelar_depan'],
+            'nama_depan'      => $anggota['nama_depan'],
+            'nama_belakang'   => $anggota['nama_belakang'],
+            'gelar_belakang'  => $anggota['gelar_belakang'],
+            'jabatan'         => $anggota['jabatan'],
+            'take_home_pay'   => $total_gaji
+        ];
+    }
+
+
+    public function getKomponenByAnggotaId($id_anggota)
+    {
+        return $this->db->table('penggajian p')
+            ->select('kg.*')
+            ->join('komponen_gaji kg', 'p.id_komponen_gaji = kg.id_komponen_gaji')
+            ->where('p.id_anggota', $id_anggota)
+            ->get()
+            ->getResultArray();
+    }
+
+    public function updatePenggajian($id_anggota)
+    {
+        $penggajianModel = new PenggajianModel();
+        $idKomponen = $this->request->getPost('id_komponen_gaji');
+
+        $penggajianModel->insert([
+            'id_anggota'       => $id_anggota,
+            'id_komponen_gaji' => $idKomponen,
+        ]);
+        
+        $newPenggajianModel = new PenggajianModel();
+        $updatedData = $newPenggajianModel->getPenggajianDetailsById($id_anggota);
+        
+        return $this->response->setJSON([
+            'success'       => true,
+            'take_home_pay' => $updatedData['take_home_pay'] ?? 0
+        ]);
+    }
 
 }
 
